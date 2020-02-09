@@ -159,7 +159,6 @@ const Plate = ({ item }) => {
 
   const handle = event => {
     event.preventDefault();
-
     if (event.keyCode === 39 || event.keyCode === 37) {
       if (event.keyCode === 39) {
         selectChar($("#car_number"), true);
@@ -168,10 +167,16 @@ const Plate = ({ item }) => {
         selectChar($("#car_number"), false);
         event.preventDefault();
       }
+    } else if (event.keyCode >= 48 && event.keyCode <= 90) {
+      console.log(carNumber[$("#car_number").get(0).selectionStart]);
     } else {
       focusPlate($("#car_number"));
       event.preventDefault();
     }
+  };
+
+  const onChange = e => {
+    console.log(e);
   };
 
   const classVLine = vLine ? "vertical-line" : "vertical-line none";
