@@ -1,24 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Plate from "./component/plate/Plate";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Plate item="60A001AA" />
+      {/* <Plate item="00000AAA" />
+      <Plate item="CMD0000" />
+      <Plate item="D000000" />
+      <Plate item="T000000" />
+      <Plate item="X000000" />
+      <Plate item="UN0000" />
+      <Plate item="00H000000" />
+      <Plate item="00M000000" /> */}
     </div>
   );
 }

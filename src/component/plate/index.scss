@@ -1,0 +1,62 @@
+@font-face {
+  font-family: "Cargo";
+  src: url(../../assets/fonts/CAR-GO2.eot);
+  src: url(../../assets/fonts/CAR-GO2.woff) format("woff");
+  src: url(../../assets/fonts/CAR-GO2.woff2) format("woff2");
+  src: url(../../assets/fonts/CAR-GO2.svg) format("svg");
+  src: url(../../assets/fonts/CAR-GO2.ttf) format("truetype");
+}
+
+.plate {
+  display: inline-block;
+  position: relative;
+
+  .vertical-line {
+    width: 5px;
+    position: absolute;
+    left: 89px;
+    height: 100%;
+    background-color: #000;
+  }
+}
+#car_number {
+  padding: 0px 40px 0px 5px;
+  outline: none;
+  width: 402px;
+  height: 76px;
+  font-size: 55px;
+  font-family: "Cargo";
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 5px solid #000;
+  border-radius: 5px;
+  background-color: white;
+  // text-align: center;
+  -webkit-border-radius: 5px;
+  &::selection {
+    background-color: #f44336;
+    color: white;
+    caret-color: red;
+  }
+}
+
+.country-icon {
+  cursor: default;
+  width: 30px;
+  position: absolute;
+  right: 10px;
+  top: 16px;
+  padding-top: 25px;
+  color: #1892ba;
+  font-weight: bold;
+  font-size: 22px;
+  height: auto;
+  background-image: url(../../assets/image/uz.png);
+  background-repeat: no-repeat;
+  background-size: 30px 20px;
+}
+
+.none {
+  text-align: center !important;
+  display: none;
+}
