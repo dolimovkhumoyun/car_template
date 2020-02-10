@@ -71,7 +71,8 @@ const Plate = ({ item }) => {
 
   const isTemplate = cn => {
     let t_cn = cn.toUpperCase().replace(/\s|\-/g, "");
-    for (let i = 0; i < Templates.length; i++) if (t_cn === Templates[i]) return true;
+    for (let i = 0; i < Templates.length; i++)
+      if (t_cn === Templates[i]) return true;
     return false;
   };
 
@@ -167,12 +168,46 @@ const Plate = ({ item }) => {
         selectChar($("#car_number"), false);
         event.preventDefault();
       }
-    } else if (event.keyCode >= 48 && event.keyCode <= 90) {
-      console.log(carNumber[$("#car_number").get(0).selectionStart]);
+    } else if (
+      (event.keyCode >= 48 && event.keyCode <= 90) ||
+      (event.keyCode >= 96 && event.keyCode <= 105)
+    ) {
+      let char = carNumber[$("#car_number").get(0).selectionStart];
+      if (is_numeric(char) && is_numeric(event.key)) {
+        console.log(char);
+        let str = setCharAt(
+          carNumber,
+          $("#car_number").get(0).selectionStart,
+          event.key
+        );
+        setCarNumber(str);
+      } else if (isLetter(char)) {
+        let str = setCharAt(
+          carNumber,
+          $("#car_number").get(0).selectionStart,
+          event.key
+        );
+        setCarNumber(str);
+      }
+      console.log(is_numeric(char));
+      console.log(is_numeric(event.key));
+      // console.log(carNumber[$("#car_number").get(0).selectionStart]);
     } else {
       focusPlate($("#car_number"));
       event.preventDefault();
     }
+  };
+
+  const isLetter = str => {
+    return str.length === 1 && str.match(/[a-z]/i);
+  };
+  const is_numeric = str => {
+    return /^\d+$/.test(str);
+  };
+
+  const setCharAt = (str, index, chr) => {
+    if (index > str.length - 1) return str;
+    return str.substr(0, index) + chr + str.substr(index + 1);
   };
 
   const onChange = e => {
