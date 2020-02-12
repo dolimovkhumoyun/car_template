@@ -39,8 +39,8 @@ const Colors = [
   { backgroundColor: "#22B14C", color: "white", textAlign: "center" },
   { backgroundColor: "#22B14C", color: "white", textAlign: "center" },
   { backgroundColor: "#3F48CC", color: "white", textAlign: "center" },
-  { backgroundColor: "#FFC913", color: "black", textAlign: "center" },
-  { backgroundColor: "#22B14C", color: "white", textAlign: "center" }
+  { backgroundColor: "#FFC913", color: "black" },
+  { backgroundColor: "#FFC913", color: "black" }
 ];
 String.prototype.splice = function(idx, str) {
   return this.slice(0, idx) + str + this.slice(idx);
@@ -48,10 +48,12 @@ String.prototype.splice = function(idx, str) {
 
 const Plate = ({ item }) => {
   const [carNumber, setCarNumber] = useState("");
+  const [tmpNumber, setTmpNumber] = useState("");
   const [type, setType] = useState(0);
-  const [inPr, setInPr] = useState(-1);
+  const [isTemp, setTemp] = useState(false); // setting the template
   const [vLine, setVLine] = useState(true); //Vertical Line Visibility
   const [iconVisibility, setIconVisibility] = useState(true); //Coutry icon visiblity
+
   const [startSelection, setStart] = useState(0);
   const [endSelection, setEnd] = useState(1);
   const input = useRef();
@@ -92,6 +94,8 @@ const Plate = ({ item }) => {
     setType(i);
     switch (i) {
       case 0:
+        setIconVisibility(true);
+        setVLine(true);
         return cn
           .splice(6, " ")
           .splice(3, " ")
@@ -183,6 +187,17 @@ const Plate = ({ item }) => {
         let str = setCharAt(carNumber, input.current.selectionStart, event.key);
         setCarNumber(str);
       }
+    } else if (event.keyCode === 112) {
+      if (type === cnFormat(carNumber) && isTemp) {
+        parseFormat(carNumber);
+        setTemp(false);
+      } else if (type === Templates.length - 1) {
+        setTmpNumber(parseFormat(Templates[0]));
+        setTemp(true);
+      } else {
+        setTmpNumber(parseFormat(Templates[type + 1]));
+        setTemp(true);
+      }
     } else {
       focusPlate(input.current);
       event.preventDefault();
@@ -223,7 +238,7 @@ const Plate = ({ item }) => {
           maxLength={12}
           id="car_number"
           name="number_plate"
-          defaultValue={carNumber}
+          defaultValue={isTemp ? tmpNumber : carNumber}
           onKeyDown={handle}
           onMouseDown={handle}
           ref={input}
