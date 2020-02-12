@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import $ from "jquery";
 
 import "../plate/index.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -53,15 +52,13 @@ const Plate = ({ item }) => {
   const [inPr, setInPr] = useState(-1);
   const [vLine, setVLine] = useState(true); //Vertical Line Visibility
   const [iconVisibility, setIconVisibility] = useState(true); //Coutry icon visiblity
-  const [selection, setSelection] = useState({ start: 0, end: 1 });
+  const [startSelection, setStart] = useState(0);
+  const [endSelection, setEnd] = useState(1);
+  const input = useRef();
 
   useEffect(() => {
-    $("#car_number")
-      .get(0)
-      .focus();
-    $("#car_number")
-      .get(0)
-      .setSelectionRange(0, 1);
+    input.current.focus();
+    input.current.setSelectionRange(startSelection, endSelection);
   });
 
   useEffect(() => {
@@ -71,6 +68,7 @@ const Plate = ({ item }) => {
 
   const isTemplate = cn => {
     let t_cn = cn.toUpperCase().replace(/\s|\-/g, "");
+    console.log(t_cn);
     for (let i = 0; i < Templates.length; i++)
       if (t_cn === Templates[i]) return true;
     return false;
@@ -100,11 +98,10 @@ const Plate = ({ item }) => {
           .splice(2, "  ");
       case 1:
         return cn.splice(5, " ").splice(2, "  ");
-      case 2: {
+      case 2:
         setIconVisibility(false);
         setVLine(false);
         return cn.splice(5, "-").splice(3, " ");
-      }
       case 3:
         setIconVisibility(false);
         setVLine(false);
@@ -129,9 +126,10 @@ const Plate = ({ item }) => {
         setIconVisibility(false);
         setVLine(true);
         return cn.splice(3, " ").splice(2, "  ");
-
       default:
-        return null;
+        setIconVisibility(false);
+        setVLine(false);
+        return cn;
     }
   };
 
@@ -142,16 +140,20 @@ const Plate = ({ item }) => {
 
   const selectChar = (el, isRight) => {
     if (isRight === true) {
-      for (var i = el.get(0).selectionEnd; i < el.val().length; i++) {
-        if (el.val()[i] !== " " && el.val()[i] !== "-") {
-          el.get(0).setSelectionRange(i, i + 1);
+      for (var i = el.selectionEnd; i < el.value.length; i++) {
+        if (el.value[i] !== " " && el.value[i] !== "-") {
+          el.setSelectionRange(i, i + 1);
+          setStart(i);
+          setEnd(i + 1);
           break;
         }
       }
     } else if (isRight === false) {
-      for (var i = el.get(0).selectionStart; i > 0; i--) {
-        if (el.val()[i - 1] !== " " && el.val()[i - 1] !== "-") {
-          el.get(0).setSelectionRange(i - 1, i);
+      for (var i = el.selectionStart; i > 0; i--) {
+        if (el.value[i - 1] !== " " && el.value[i - 1] !== "-") {
+          el.setSelectionRange(i - 1, i);
+          setStart(i - 1);
+          setEnd(i);
           break;
         }
       }
@@ -162,38 +164,27 @@ const Plate = ({ item }) => {
     event.preventDefault();
     if (event.keyCode === 39 || event.keyCode === 37) {
       if (event.keyCode === 39) {
-        selectChar($("#car_number"), true);
+        selectChar(input.current, true);
         event.preventDefault();
       } else if (event.keyCode === 37) {
-        selectChar($("#car_number"), false);
+        selectChar(input.current, false);
         event.preventDefault();
       }
     } else if (
       (event.keyCode >= 48 && event.keyCode <= 90) ||
       (event.keyCode >= 96 && event.keyCode <= 105)
     ) {
-      let char = carNumber[$("#car_number").get(0).selectionStart];
-      if (is_numeric(char) && is_numeric(event.key)) {
+      let char = carNumber[input.current.selectionStart];
+      if (isNumeric(char) && isNumeric(event.key)) {
         console.log(char);
-        let str = setCharAt(
-          carNumber,
-          $("#car_number").get(0).selectionStart,
-          event.key
-        );
+        let str = setCharAt(carNumber, input.current.selectionStart, event.key);
         setCarNumber(str);
-      } else if (isLetter(char)) {
-        let str = setCharAt(
-          carNumber,
-          $("#car_number").get(0).selectionStart,
-          event.key
-        );
+      } else if (isLetter(char) && isLetter(event.key)) {
+        let str = setCharAt(carNumber, input.current.selectionStart, event.key);
         setCarNumber(str);
       }
-      console.log(is_numeric(char));
-      console.log(is_numeric(event.key));
-      // console.log(carNumber[$("#car_number").get(0).selectionStart]);
     } else {
-      focusPlate($("#car_number"));
+      focusPlate(input.current);
       event.preventDefault();
     }
   };
@@ -201,7 +192,7 @@ const Plate = ({ item }) => {
   const isLetter = str => {
     return str.length === 1 && str.match(/[a-z]/i);
   };
-  const is_numeric = str => {
+  const isNumeric = str => {
     return /^\d+$/.test(str);
   };
 
@@ -210,13 +201,8 @@ const Plate = ({ item }) => {
     return str.substr(0, index) + chr + str.substr(index + 1);
   };
 
-  const onChange = e => {
-    console.log(e);
-  };
-
   const classVLine = vLine ? "vertical-line" : "vertical-line none";
   const classIcon = iconVisibility ? "country-icon" : "country-icon none";
-  const input = useRef();
 
   return (
     <div className="container-fluid mt-5">
